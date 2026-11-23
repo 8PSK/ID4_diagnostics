@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>VW ID.4 Telemetry</title>
+<style>
+:root {
+  color-scheme: dark;
+  font-family: system-ui, sans-serif;
+  background: #101720;
+  color: #f3f6fa;
+}
+body {
+  max-width: 1300px;
+  margin: auto;
+  padding: 24px;
+}
+h1 { font-size: 28px; }
+h2 {
+  font-size: 19px;
+  margin: 30px 0 14px;
+}
+.status {
+  display: inline-block;
+  background: #273647;
+  padding: 9px 15px;
+  border-radius: 20px;
+  color: #9db2c8;
+  font-size: 13px;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit,minmax(180px,1fr));
+  gap: 14px;
+}
+.card {
+  background: #202c3a;
+  padding: 19px;
+  border-radius: 13px;
+  min-height: 90px;
+}
+.name {
+  color: #a5b4c5;
+  font-size: 13px;
+}
+.value {
+  font-size: 29px;
+  font-weight: 700;
+  margin-top: 14px;
+}
+.unit {
+  font-size: 13px;
+  color: #a5b4c5;
+}
+.error {
+  color: #ff9a9a;
+  font-size: 12px;
+  margin-top: 7px;
+}
+.muted {
+  color: #8595a7;
+  font-size: 12px;
+  margin-top: 8px;
+}
+.footer {
+  margin-top: 35px;
+  font-size: 12px;
+  color: #8392a2;
+}
+</style>
+</head>
+<body>
+<h1>Volkswagen ID.4</h1>
+<p class="muted">2022 MEB | Live vehicle and battery telemetry</p>
+<div class="status" id="status">Connecting...</div>
+
+<h2>Driving</h2>
+<div class="grid" id="driving"></div>
+<h2>Battery</h2>
+<div class="grid" id="battery"></div>
+<h2>Power and efficiency</h2>
+<div class="grid" id="power"></div>
+<h2>Thermal management</h2>
+<div class="grid" id="thermal"></div>
+<h2>Drivetrain</h2>
+<div class="grid" id="drivetrain"></div>
+<h2>Electrical system</h2>
+<div class="grid" id="electrical"></div>
+
+<div class="footer">
+Local read-only telemetry.
+No vehicle coding or control functions.
+</div>
+
+<script>
+const sections = {
+  driving: [
+    ["vehicle_speed", "Vehicle speed"],
+    ["motor_rpm", "Motor RPM"]
+  ],
+  battery: [
+    ["battery_soc_display", "Displayed SOC"],
+    ["battery_soc", "BMS SOC"],
+    ["battery_voltage", "HV voltage"],
+    ["battery_current", "HV current"],
+    ["cell_voltage_max", "Maximum cell voltage"],
+    ["cell_voltage_min", "Minimum cell voltage"],
+    ["battery_temp_max", "Maximum battery temperature"],
+    ["battery_temp_min", "Minimum battery temperature"]
+  ],
+  power: [
+    ["battery_power_kw", "Battery power"],
+    ["battery_drain_kw", "Battery drain"],
+    ["regenerative_power_kw", "Regenerative power"],
+    ["consumption_kwh_100km", "Instant consumption"],
+    ["remaining_energy_kwh", "Estimated energy remaining"],
+    ["trip_energy_kwh", "Trip energy used"],
+    ["trip_distance_km", "Trip distance"],
+    ["trip_average_kwh_100km", "Trip average consumption"]
+  ],
+  thermal: [
+    ["battery_temp_inlet", "Coolant inlet"],
+    ["battery_temp_outlet", "Coolant outlet"]
+  ],
+  drivetrain: [
+    ["motor_rpm", "Motor speed"]
+  ],
+  electrical: [
+    ["aux_battery_voltage", "12V battery voltage"]
+  ]
+};
+
+const units = {
+  vehicle_speed: "km/h",
+  motor_rpm: "rpm",
+  battery_soc_display: "%",
+  battery_soc: "%",
+  battery_voltage: "V",
+  battery_current: "A",
+  battery_temp_max: "°C",
+  battery_temp_min: "°C",
+  battery_temp_inlet: "°C",
+  battery_temp_outlet: "°C",
+  cell_voltage_max: "V",
+  cell_voltage_min: "V",
+  battery_power_kw: "kW",
+  battery_drain_kw: "kW",
+  regenerative_power_kw: "kW",
+  consumption_kwh_100km: "kWh/100 km",
+  remaining_energy_kwh: "kWh",
+  trip_energy_kwh: "kWh",
+  trip_distance_km: "km",
+  trip_average_kwh_100km: "kWh/100 km",
+  aux_battery_voltage: "V"
+};
+
+function getValue(data, key) {
+  if (key in data) {
+    return data[key];
+  }
+
+  const derived = data.derived;
+  if (derived && key in derived) {
+    return {
+      value: derived[key],
+      status: "valid"
+    };
+  }
+
+  return null;
+}
+
+function makeCard(key, label, data) {
+  const card = document.createElement("div");
+  card.className = "card";
+
+  const name = document.createElement("div");
+  name.className = "name";
+  name.textContent = label;
+
+  const value = document.createElement("div");
+  value.className = "value";
+
+  const item = getValue(data, key);
+
+  if (item && item.status === "valid"
+      && item.value !== null
+      && item.value !== undefined) {
+    value.textContent = Number(item.value).toFixed(2);
+
+    const unit = document.createElement("span");
+    unit.className = "unit";
+    unit.textContent = " " + (units[key] || "");
+    value.append(unit);
+  } else {
+    value.textContent = "--";
+
+    const error = document.createElement("div");
+    error.className = "error";
+    error.textContent =
+      item?.error || "Waiting for verified data";
+    card.append(error);
+  }
+
+  card.append(name, value);
+  return card;
+}
+
+function update(data) {
+  for (const [section, items] of Object.entries(sections)) {
+    const container = document.getElementById(section);
+    container.replaceChildren();
+
+    for (const [key, label] of items) {
+      container.append(makeCard(key, label, data));
+    }
+  }
+}
+
+function connect() {
+  const scheme =
+    location.protocol === "https:" ? "wss" : "ws";
+
+  const ws = new WebSocket(
+    `${scheme}://${location.host}/ws`
+  );
+
+  ws.onopen = () => {
+    document.getElementById("status").textContent =
+      "Connected to vehicle telemetry";
+  };
+
+  ws.onmessage = event => {
+    update(JSON.parse(event.data));
+  };
+
+  ws.onclose = () => {
+    document.getElementById("status").textContent =
+      "Disconnected - reconnecting";
+    setTimeout(connect, 3000);
+  };
+
+  ws.onerror = () => {
+    document.getElementById("status").textContent =
+      "Connection error";
+  };
+}
+
+connect();
+</script>
+</body>
+</html>

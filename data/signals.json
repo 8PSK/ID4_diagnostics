@@ -1,0 +1,37 @@
+{
+  "vehicle": {
+    "make": "Volkswagen",
+    "model": "ID.4",
+    "year": 2022,
+    "platform": "MEB"
+  },
+  "source": {
+    "repository": "https://github.com/OBDb/Volkswagen-ID.4",
+    "file": "signalsets/v3/default.json",
+    "license": "CC-BY-SA-4.0",
+    "attribution": "OBDb Volkswagen ID.4 contributors"
+  },
+  "settings": {
+    "can_protocol": "15765-4-29bit",
+    "can_bitrate": 500000,
+    "current_positive_means_discharge": null,
+    "usable_capacity_kwh": null
+  },
+  "signals": [
+    {"id":"vehicle_speed","name":"Vehicle speed","category":"movement","ecu":"vehicle","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0xF40D","byte_offset":0,"byte_length":1,"datatype":"uint","multiplier":1,"divisor":1,"offset":0,"unit":"km/h","interval":1,"enabled":false,"verified":false},
+    {"id":"motor_rpm","name":"Motor RPM","category":"drivetrain","ecu":"motor","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0xF40C","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":4,"offset":0,"unit":"rpm","interval":1,"enabled":false,"verified":false},
+    {"id":"battery_soc_display","name":"Displayed battery SOC","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x028C","byte_offset":0,"byte_length":1,"datatype":"uint","multiplier":20.4,"divisor":46,"offset":-6.4,"unit":"%","interval":3,"enabled":false,"verified":false},
+    {"id":"battery_soc","name":"BMS state of charge","category":"battery","ecu":"bms","tx_id":"0x17FC0076","rx_id":"0x17FE0076","did":"0x3DEF","byte_offset":0,"byte_length":2,"datatype":"int","multiplier":1,"divisor":100,"offset":0,"unit":"%","interval":3,"enabled":false,"verified":false},
+    {"id":"battery_voltage","name":"HV battery voltage","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E3C","byte_offset":0,"byte_length":4,"datatype":"int","multiplier":1,"divisor":4096,"offset":0,"unit":"V","interval":1,"enabled":false,"verified":false},
+    {"id":"battery_current","name":"HV battery current","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E3E","byte_offset":0,"byte_length":4,"datatype":"uint","multiplier":1,"divisor":100,"offset":-1500,"unit":"A","interval":1,"enabled":false,"verified":false,"polarity_verified":false},
+    {"id":"battery_temp_max","name":"Maximum battery temperature","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E0E","byte_offset":0,"byte_length":2,"datatype":"int","multiplier":1,"divisor":64,"offset":0,"unit":"°C","interval":5,"enabled":false,"verified":false},
+    {"id":"battery_temp_min","name":"Minimum battery temperature","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E0F","byte_offset":0,"byte_length":2,"datatype":"int","multiplier":1,"divisor":64,"offset":0,"unit":"°C","interval":5,"enabled":false,"verified":false},
+    {"id":"battery_temp_inlet","name":"Battery coolant inlet temperature","category":"thermal","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x189D","byte_offset":2,"byte_length":2,"datatype":"int","multiplier":1,"divisor":64,"offset":0,"unit":"°C","interval":5,"enabled":false,"verified":false},
+    {"id":"battery_temp_outlet","name":"Battery coolant outlet temperature","category":"thermal","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x189D","byte_offset":0,"byte_length":2,"datatype":"int","multiplier":1,"divisor":64,"offset":0,"unit":"°C","interval":5,"enabled":false,"verified":false},
+    {"id":"cell_voltage_max","name":"Maximum cell voltage","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E33","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":4096,"offset":0,"unit":"V","interval":5,"enabled":false,"verified":false},
+    {"id":"cell_voltage_min","name":"Minimum cell voltage","category":"battery","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E34","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":4096,"offset":0,"unit":"V","interval":5,"enabled":false,"verified":false},
+    {"id":"charge_current_limit","name":"Maximum charging current","category":"charging","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E1B","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":5,"offset":0,"unit":"A","interval":5,"enabled":false,"verified":false},
+    {"id":"discharge_current_limit","name":"Maximum discharging current","category":"charging","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E1C","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":5,"offset":0,"unit":"A","interval":5,"enabled":false,"verified":false},
+    {"id":"aux_battery_voltage","name":"12V battery voltage","category":"electrical","ecu":"bms","tx_id":"0x17FC007B","rx_id":"0x17FE007B","did":"0x1E3B","byte_offset":0,"byte_length":2,"datatype":"uint","multiplier":1,"divisor":4,"offset":0,"unit":"V","interval":10,"enabled":false,"verified":false}
+  ]
+}

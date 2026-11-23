@@ -1,0 +1,27 @@
+{
+  "vehicle": {
+    "make": "Volkswagen",
+    "model": "ID.4",
+    "year": 2022,
+    "platform": "MEB"
+  },
+  "adapter": {
+    "type": "elm327",
+    "port": "/dev/ttyUSB0",
+    "baudrate": 38400,
+    "timeout": 5,
+    "protocol": "8"
+  },
+  "polling": {
+    "default_interval": 5,
+    "minimum_interval": 2
+  },
+  "database": {
+    "signals": "data/signals.json",
+    "sqlite": "data/telemetry.db"
+  },
+  "dashboard": {
+    "host": "127.0.0.1",
+    "port": 8000
+  }
+}
